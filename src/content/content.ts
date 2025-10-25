@@ -122,5 +122,78 @@ function showNotification(message: string, type: 'info' | 'success' | 'error') {
   }, 3000);
 }
 
+/**
+ * Medical terms dictionary for hover detection
+ */
+const MEDICAL_TERMS = [
+  'hypertension', 'diabetes', 'cardiovascular', 'myocardial', 'infarction',
+  'arrhythmia', 'thrombosis', 'embolism', 'stenosis', 'aneurysm',
+  'pneumonia', 'bronchitis', 'asthma', 'emphysema', 'fibrosis',
+  'hepatitis', 'cirrhosis', 'gastritis', 'ulcer', 'colitis',
+  'arthritis', 'osteoporosis', 'rheumatoid', 'lupus', 'gout',
+  'meningitis', 'encephalitis', 'stroke', 'seizure', 'epilepsy',
+  'cancer', 'malignant', 'benign', 'metastasis', 'carcinoma',
+  'lymphoma', 'leukemia', 'sarcoma', 'melanoma', 'adenoma',
+  'infection', 'sepsis', 'bacteremia', 'viremia', 'fungal',
+  'inflammation', 'edema', 'necrosis', 'fibrosis', 'atrophy',
+  'hypertrophy', 'hyperplasia', 'dysplasia', 'metaplasia', 'anaplasia',
+];
+
+/**
+ * Detect medical terms in text and add hover tooltips
+ */
+function detectAndHighlightMedicalTerms(): void {
+  const bodyText = document.body.innerText;
+  const foundTerms = MEDICAL_TERMS.filter(term =>
+    bodyText.toLowerCase().includes(term)
+  );
+
+  if (foundTerms.length > 0) {
+    console.log('Found medical terms:', foundTerms);
+    // Highlight found terms for user awareness
+    highlightTerms(foundTerms);
+  }
+}
+
+// Initialize medical term detection when page loads
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', detectAndHighlightMedicalTerms);
+} else {
+  detectAndHighlightMedicalTerms();
+}
+
+/**
+ * Highlight medical terms in the page
+ */
+function highlightTerms(terms: string[]) {
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    null
+  );
+
+  const nodesToReplace: Array<{ node: Node; term: string }> = [];
+  let node;
+
+  while ((node = walker.nextNode())) {
+    for (const term of terms) {
+      const regex = new RegExp(`\\b${term}\\b`, 'gi');
+      if (regex.test(node.textContent || '')) {
+        nodesToReplace.push({ node, term });
+      }
+    }
+  }
+
+  // Replace text nodes with highlighted versions
+  nodesToReplace.forEach(({ node, term }) => {
+    const span = document.createElement('span');
+    span.innerHTML = (node.textContent || '').replace(
+      new RegExp(`\\b(${term})\\b`, 'gi'),
+      '<span class="medclarify-term" style="background-color: #fff3cd; cursor: help; border-bottom: 2px dotted #ffc107;" title="Medical term - click to learn more">$1</span>'
+    );
+    node.parentNode?.replaceChild(span, node);
+  });
+}
+
 console.log('MedClarify content script loaded');
 

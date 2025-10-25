@@ -77,6 +77,30 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   }
 });
 
+// Handle AI processing requests from content scripts
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
+  if (request.action === 'processSimplify') {
+    // Process simplification request
+    console.log('Processing simplification request');
+    sendResponse({ success: true });
+    return true;
+  }
+
+  if (request.action === 'processSummarize') {
+    // Process summarization request
+    console.log('Processing summarization request');
+    sendResponse({ success: true });
+    return true;
+  }
+
+  if (request.action === 'processExplain') {
+    // Process explanation request
+    console.log('Processing explanation request');
+    sendResponse({ success: true });
+    return true;
+  }
+});
+
 // Log when service worker starts
 console.log('MedClarify background service worker loaded');
 

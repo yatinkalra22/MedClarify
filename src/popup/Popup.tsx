@@ -4,6 +4,8 @@ import {
   checkAIAvailability,
   simplifyMedicalText,
   summarizeMedicalText,
+  explainMedicalTerms,
+  rewriteMedicalText,
 } from '../utils/aiApis';
 
 interface AIAvailability {
@@ -24,7 +26,7 @@ export const Popup: React.FC = () => {
     summarizer: false,
     rewriter: false,
   });
-  const [activeTab, setActiveTab] = useState<'simplify' | 'summarize'>('simplify');
+  const [activeTab, setActiveTab] = useState<'simplify' | 'summarize' | 'explain' | 'rewrite'>('simplify');
 
   useEffect(() => {
     // Check AI availability
@@ -90,6 +92,50 @@ export const Popup: React.FC = () => {
     }
   };
 
+  const handleExplain = async () => {
+    if (!selectedText.trim()) {
+      setError('Please select some medical text first');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setResult('');
+
+    try {
+      const explained = await explainMedicalTerms(selectedText);
+      setResult(explained);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Failed to explain text'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRewrite = async () => {
+    if (!selectedText.trim()) {
+      setError('Please select some medical text first');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setResult('');
+
+    try {
+      const rewritten = await rewriteMedicalText(selectedText, 'casual', 'same');
+      setResult(rewritten);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Failed to rewrite text'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleCopy = () => {
     navigator.clipboard.writeText(result);
   };
@@ -138,10 +184,10 @@ export const Popup: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-4 flex-wrap">
         <button
           onClick={() => setActiveTab('simplify')}
-          className={`flex-1 py-2 px-3 rounded-lg font-medium transition-colors ${
+          className={`flex-1 min-w-[80px] py-2 px-3 rounded-lg font-medium transition-colors text-sm ${
             activeTab === 'simplify'
               ? 'bg-medical-600 text-white'
               : 'bg-white text-medical-700 border border-medical-300 hover:bg-medical-50'
@@ -151,7 +197,7 @@ export const Popup: React.FC = () => {
         </button>
         <button
           onClick={() => setActiveTab('summarize')}
-          className={`flex-1 py-2 px-3 rounded-lg font-medium transition-colors ${
+          className={`flex-1 min-w-[80px] py-2 px-3 rounded-lg font-medium transition-colors text-sm ${
             activeTab === 'summarize'
               ? 'bg-medical-600 text-white'
               : 'bg-white text-medical-700 border border-medical-300 hover:bg-medical-50'
@@ -159,15 +205,40 @@ export const Popup: React.FC = () => {
         >
           Summarize
         </button>
+        <button
+          onClick={() => setActiveTab('explain')}
+          className={`flex-1 min-w-[80px] py-2 px-3 rounded-lg font-medium transition-colors text-sm ${
+            activeTab === 'explain'
+              ? 'bg-medical-600 text-white'
+              : 'bg-white text-medical-700 border border-medical-300 hover:bg-medical-50'
+          }`}
+        >
+          Explain
+        </button>
+        <button
+          onClick={() => setActiveTab('rewrite')}
+          className={`flex-1 min-w-[80px] py-2 px-3 rounded-lg font-medium transition-colors text-sm ${
+            activeTab === 'rewrite'
+              ? 'bg-medical-600 text-white'
+              : 'bg-white text-medical-700 border border-medical-300 hover:bg-medical-50'
+          }`}
+        >
+          Rewrite
+        </button>
       </div>
 
       {/* Action Button */}
       <button
-        onClick={activeTab === 'simplify' ? handleSimplify : handleSummarize}
+        onClick={() => {
+          if (activeTab === 'simplify') handleSimplify();
+          else if (activeTab === 'summarize') handleSummarize();
+          else if (activeTab === 'explain') handleExplain();
+          else if (activeTab === 'rewrite') handleRewrite();
+        }}
         disabled={loading || !selectedText.trim()}
         className="w-full py-2 px-4 bg-medical-600 text-white rounded-lg font-semibold hover:bg-medical-700 disabled:bg-medical-300 disabled:cursor-not-allowed transition-colors mb-4"
       >
-        {loading ? 'Processing...' : activeTab === 'simplify' ? 'Simplify' : 'Summarize'}
+        {loading ? 'Processing...' : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
       </button>
 
       {/* Error Message */}

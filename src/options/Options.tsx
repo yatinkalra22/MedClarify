@@ -26,7 +26,7 @@ export const Options: React.FC = () => {
     });
   }, []);
 
-  const handleChange = (key: keyof Settings, value: any) => {
+  const handleChange = (key: keyof Settings, value: string | boolean) => {
     setSettings((prev) => ({
       ...prev,
       [key]: value,
@@ -98,7 +98,7 @@ export const Options: React.FC = () => {
                     value={action}
                     checked={settings.defaultAction === action}
                     onChange={(e) =>
-                      handleChange('defaultAction', e.target.value as any)
+                      handleChange('defaultAction', e.target.value as 'simplify' | 'summarize')
                     }
                     className="w-4 h-4 text-medical-600"
                   />
@@ -124,7 +124,7 @@ export const Options: React.FC = () => {
                     name="tone"
                     value={tone}
                     checked={settings.tone === tone}
-                    onChange={(e) => handleChange('tone', e.target.value as any)}
+                    onChange={(e) => handleChange('tone', e.target.value as 'formal' | 'casual')}
                     className="w-4 h-4 text-medical-600"
                   />
                   <span className="text-medical-800 capitalize">{tone}</span>
@@ -150,7 +150,7 @@ export const Options: React.FC = () => {
                     value={length}
                     checked={settings.summaryLength === length}
                     onChange={(e) =>
-                      handleChange('summaryLength', e.target.value as any)
+                      handleChange('summaryLength', e.target.value as 'short' | 'medium' | 'long')
                     }
                     className="w-4 h-4 text-medical-600"
                   />
@@ -167,6 +167,12 @@ export const Options: React.FC = () => {
               className="flex-1 py-3 px-6 bg-medical-600 text-white rounded-lg font-semibold hover:bg-medical-700 transition-colors"
             >
               Save Settings
+            </button>
+            <button
+              onClick={() => setSettings(DEFAULT_SETTINGS)}
+              className="flex-1 py-3 px-6 bg-gray-300 text-gray-800 rounded-lg font-semibold hover:bg-gray-400 transition-colors"
+            >
+              Reset to Defaults
             </button>
           </div>
 

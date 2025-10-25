@@ -20,11 +20,14 @@ npm run build
 
 ## ✨ Features
 
-- **Simplify Medical Text** - Convert complex medical terminology into plain language
-- **Summarize Content** - Get key points from medical articles and documents
+- **Simplify Medical Text** - Convert complex medical terminology into plain language using Rewriter API
+- **Summarize Content** - Get key points from medical articles using Summarizer API
+- **Explain Medical Terms** - Get detailed explanations using Prompt API
+- **Rewrite with Custom Tone** - Rewrite text in formal or casual tone
+- **Medical Term Highlighting** - Auto-detect and highlight 50+ medical terms on web pages
 - **Context Menu Integration** - Right-click to simplify or summarize selected text
 - **Settings Page** - Customize preferences and behavior
-- **On-Device Processing** - Uses Chrome's built-in AI APIs (no external servers)
+- **On-Device Processing** - Uses Chrome's built-in AI APIs (no external servers, no data sent)
 
 ## 🛠️ Tech Stack
 
@@ -63,9 +66,15 @@ MedClarify/
 
 ## 📚 Documentation
 
-- **[Getting Started](./docs/QUICKSTART.md)** - 5-minute setup guide
+**[📖 View Full Documentation Index](./docs/INDEX.md)** - Complete guide to all documentation
+
+### Quick Links
+- **[Quick Start](./docs/QUICKSTART.md)** - 5-minute setup guide
+- **[Features Implemented](./docs/FEATURES_IMPLEMENTED.md)** - Complete feature list
 - **[Architecture](./docs/ARCHITECTURE.md)** - System design and data flow
 - **[Development Guide](./docs/DEVELOPMENT.md)** - How to develop and extend
+- **[API Fix Guide](./docs/API_FIX_GUIDE.md)** - Chrome AI APIs setup and troubleshooting
+- **[Testing Guide](./docs/QUICK_START_TESTING.md)** - How to test features
 - **[Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
 ## 🔧 Available Commands
